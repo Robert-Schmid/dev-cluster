@@ -1,0 +1,25 @@
+---
+
+- hosts: all
+  tasks:
+    - name: Disable password login
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/20-force_publickey_auth.conf
+        content: |
+          PasswordAuthentication no
+          Authenticationmethods publickey
+      become: true
+
+    - name: Disable root login
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/20-deny_root.conf
+        content: |
+          PermitRootLogin no
+      become: true
+
+    - name: restart ssh service
+      ansible.builtin.service:
+        name: ssh
+        state: reloaded
+      become: true
+
